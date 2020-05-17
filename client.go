@@ -18,13 +18,12 @@ import (
 )
 
 type Client struct {
-	BaseURL    *url.URL
-	ApiURL     string
-	Project    string
-	BTSProject string
-	BTSUrl     string
-	Token      string
-	UserAgent  string
+	BaseURL   *url.URL
+	ApiURL    string
+	Project   string
+	BTSUrl    string
+	Token     string
+	UserAgent string
 
 	Stack    *stack.Stack
 	LaunchId string
@@ -34,7 +33,7 @@ type Client struct {
 	l          *zap.SugaredLogger
 }
 
-func New(baseUrl string, project string, token string, btsProject string, btsUrl string, dumptransport bool, options ...func(*Client) error) *Client {
+func New(baseUrl string, project string, token string, btsUrl string, dumptransport bool, options ...func(*Client) error) *Client {
 	c := &Client{}
 	c.httpClient = NewLoggingHTTPClient(dumptransport, 120)
 
@@ -50,7 +49,6 @@ func New(baseUrl string, project string, token string, btsProject string, btsUrl
 	c.l = NewLogger("info")
 	c.Stack = stack.New()
 	c.LaunchId = ""
-	c.BTSProject = btsProject
 	c.BTSUrl = btsUrl
 
 	for _, op := range options {
@@ -309,7 +307,7 @@ func (c *Client) FinishTestItemId(id string, status string, endTimeStringRFC3339
 }
 
 func (c *Client) LinkIssue(itemId int, ticketId string, url string) (string, error) {
-	project := strings.Split(ticketId, "-")[0]
+	project := strings.ToLower(strings.Split(ticketId, "-")[0])
 	p := LinkIssue{
 		Issues: []Issue{
 			{
