@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/textproto"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -307,11 +308,12 @@ func (c *Client) FinishTestItemId(id string, status string, endTimeStringRFC3339
 	return respBody.Msg, err
 }
 
-func (c *Client) LinkIssue(itemId int, ticketId string, link string) (string, error) {
+func (c *Client) LinkIssue(itemId int, ticketId string, url string) (string, error) {
+	project := strings.Split(ticketId, "-")[0]
 	p := LinkIssue{
 		Issues: []Issue{
 			{
-				BtsProject: c.BTSProject,
+				BtsProject: project,
 				BtsUrl:     c.BTSUrl,
 				// the way we handle tickets breaks workflow of Report Portal,
 				// bugs should be created after run, not before
@@ -319,14 +321,14 @@ func (c *Client) LinkIssue(itemId int, ticketId string, link string) (string, er
 				// so submit date cannot be obtained without jira client here
 				SubmitDate: time.Now().Unix(),
 				TicketId:   ticketId,
-				Url:        link,
+				Url:        url,
 			},
 		},
 		TestItemIds: []int{
 			itemId,
 		},
 	}
-	c.l.Debugf("linking item issues with id: %d, ticketId: %s, link: %s", itemId, ticketId, link)
+	c.l.Debugf("linking item issues with id: %d, ticketId: %s, link: %s", itemId, ticketId, url)
 	req, err := c.newRequest("PUT", fmt.Sprintf("%s/%s/item/issue/link", c.ApiURL, c.Project), p, "application/json")
 	if err != nil {
 		return "", err
