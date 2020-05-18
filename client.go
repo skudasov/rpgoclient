@@ -317,7 +317,7 @@ func (c *Client) LinkIssue(itemId int, ticketId string, url string) (string, err
 				// bugs should be created after run, not before
 				// we link tickets that already have been parsed out of logs
 				// so submit date cannot be obtained without jira client here
-				SubmitDate: time.Now().Unix(),
+				SubmitDate: time.Now().Unix() * 1000,
 				TicketId:   ticketId,
 				Url:        url,
 			},
