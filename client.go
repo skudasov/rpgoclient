@@ -469,6 +469,7 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 		resp, err = c.httpClient.Do(req)
 		if err != nil {
 			c.l.Error(err)
+			continue
 		}
 		if resp != nil && resp.StatusCode >= 400 {
 			c.l.Errorf("request failed: status: %s", resp.Status)
@@ -479,8 +480,10 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 			}
 			continue
 		}
-		err = json.NewDecoder(resp.Body).Decode(v)
-		err = resp.Body.Close()
+		if resp != nil && resp.Body != nil {
+			err = json.NewDecoder(resp.Body).Decode(v)
+			err = resp.Body.Close()
+		}
 		return resp, err
 	}
 	return nil, httpRetriesReachedErr
