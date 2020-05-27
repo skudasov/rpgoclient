@@ -43,7 +43,7 @@ func TestClient_StartLaunch(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	launchId, err := C.StartLaunch("testrun", "test launch", "", []string{"tag1"}, "DEFAULT")
 	if err != nil {
 		t.Error(err)
@@ -72,7 +72,7 @@ func TestClient_StartLaunchWithTime(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	launchId, err := C.StartLaunch("testrun", "test launch", "2019-02-01T14:21:30.049064+03:00", []string{"tag1"}, "DEFAULT")
 	if err != nil {
 		t.Error(err)
@@ -99,7 +99,7 @@ func TestClient_FinishLaunch(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push(nil)
 	C.LaunchId = "launch_id"
 	msg, err := C.FinishLaunch("PASSED", "")
@@ -131,7 +131,7 @@ func TestClient_StartTestItem(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.LaunchId = "launch_id"
 	params := make([]map[string]string, 0)
 	params = append(params, map[string]string{"key": "sdf", "value": "sdF"})
@@ -164,7 +164,7 @@ func TestClient_StartTestItemWithTimeRFC3339(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.LaunchId = "launch_id"
 	params := make([]map[string]string, 0)
 	params = append(params, map[string]string{"key": "sdf", "value": "sdF"})
@@ -194,7 +194,7 @@ func TestClient_FinishTestItem(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push("parent_item_id")
 	msg, err := C.FinishTestItem("PASSED", "", nil)
 	if err != nil {
@@ -223,7 +223,7 @@ func TestClient_FinishTestItemWithEndTime(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push("parent_item_id")
 	msg, err := C.FinishTestItem("PASSED", "2019-02-01T14:21:30.049304+03:00", nil)
 	if err != nil {
@@ -253,7 +253,7 @@ func TestClient_Log(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push(nil)
 	C.Stack.Push("last_item_id")
 	msg, err := C.Log("logmessage", "DEBUG")
@@ -287,7 +287,7 @@ func TestClient_LogBatch(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push(nil)
 	C.Stack.Push("last_item_id")
 	err := C.LogBatch([]LogPayload{
@@ -320,7 +320,7 @@ func TestClient_LogNotAttachableToLaunchItem(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	C.Stack.Push(nil) // launch item
 	_, err := C.Log("logmessage", "DEBUG")
 	if err != nil {
@@ -349,7 +349,7 @@ func TestClient_FailedRequest(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false)
+	C = New(ts.URL, project, token, btsProject, false)
 	launchId, err := C.StartLaunch("testrun", "", "", []string{"tag1"}, "DEFAULT")
 	assert.Error(t, err)
 	assert.Empty(t, launchId)
@@ -376,7 +376,7 @@ func TestOptions(t *testing.T) {
 		_, _ = w.Write(data)
 	}))
 	defer ts.Close()
-	C = New(ts.URL, project, token, btsProject, btsUrl, false, WithHttpClient(&http.Client{}), WithRetries(5), WithVerbosity("debug"))
+	C = New(ts.URL, project, token, btsProject, false, WithHttpClient(&http.Client{}), WithRetries(5), WithVerbosity("debug"))
 	launchId, err := C.StartLaunch("testrun", "", "", []string{"tag1"}, "DEFAULT")
 	assert.Error(t, err)
 	assert.Empty(t, launchId)

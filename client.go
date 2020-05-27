@@ -11,6 +11,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/http/httputil"
 	"net/textproto"
 	"net/url"
 	"strings"
@@ -126,6 +127,8 @@ func (c *Client) StartLaunch(name string, description string, startTimeStringRFC
 	if err != nil {
 		return StartLaunchResponse{}, err
 	}
+	dump, err := httputil.DumpRequest(req, true)
+	c.l.Infof("request: %s", dump)
 	var respBody StartLaunchResponse
 	_, err = c.do(req, &respBody)
 	if err != nil {
